@@ -140,6 +140,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         <?php endif; ?>
 
+        <?php if (!empty($_SESSION['reset_success'])): ?>
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                <?php echo $_SESSION['reset_success']; unset($_SESSION['reset_success']); ?>
+            </div>
+        <?php endif; ?>
+
         <form method="POST" class="space-y-4">
             <div>
                 <label class="block text-gray-700 text-sm font-medium mb-2">Email atau Nomor HP</label>

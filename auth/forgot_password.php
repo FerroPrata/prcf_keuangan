@@ -61,9 +61,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $conn->prepare("UPDATE user SET password_hash = ? WHERE email = ?");
             $stmt->bind_param("ss", $hash, $_SESSION['reset_email']);
             if ($stmt->execute()) {
-                $success = 'Password berhasil direset. Silakan login.';
                 unset($_SESSION['reset_email'], $_SESSION['reset_otp'], $_SESSION['reset_otp_time'], $_SESSION['reset_step']);
-                $step = 1;
+                $_SESSION['reset_success'] = 'Password berhasil direset. Silakan login dengan password baru.';
+                header('Location: login.php');
+                exit();
             } else {
                 $error = 'Gagal mengubah password. Coba lagi.';
             }
