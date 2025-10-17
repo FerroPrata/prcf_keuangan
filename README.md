@@ -13,7 +13,7 @@ prcf_keuangan_dashboard/
 ├── 📂 auth/                            # Sistem autentikasi
 │   ├── login.php                       # Halaman login
 │   ├── register.php                    # Halaman registrasi
-│   ├── verify_otp.php                  # Verifikasi OTP (WhatsApp/Email)
+│   ├── verify_otp.php                  # Verifikasi OTP Email
 │   ├── logout.php                      # Logout handler
 │   └── unauthorized.php                # Halaman akses ditolak
 │
@@ -98,11 +98,12 @@ prcf_keuangan_dashboard/
 
 ## ✨ Fitur Utama
 
-### 🔐 **Multi-Role Authentication**
+### 🔐 **Multi-Channel Authentication**
 - **Project Manager (PM)**: Buat proposal & laporan
 - **Finance Manager (FM)**: Approve proposal (stage 1) & laporan
 - **Staff Accountant (SA)**: Validasi laporan keuangan
 - **Direktur**: Final approval proposal (stage 2)
+> Login menggunakan Email OTP (Gmail App Password). WhatsApp OTP dinonaktifkan.
 
 ### 📝 **2-Stage Proposal Approval**
 1. **Stage 1**: FM Review → Approve/Reject
@@ -113,10 +114,11 @@ prcf_keuangan_dashboard/
 - Validasi oleh Staff Accountant
 - Approval bertahap (FM → Direktur)
 
-### 🔔 **Real-time Notifications**
+### 🔔 **Real-time Notifications & OTP Email**
 - Notifikasi otomatis untuk setiap aksi
 - Read/Unread tracking
 - Real-time updates tanpa reload
+- Email OTP dikirim menggunakan templated HTML (Gmail SMTP)
 
 ### 📱 **OTP Verification**
 - **WhatsApp OTP**: Via Fonnte API
@@ -144,18 +146,13 @@ mysql -u root < sql/dumps/prcf_keuangan_clean.sql
 # Copy config template
 copy includes\config.example.php includes\config.php
 
-# Edit config.php dengan database & API credentials Anda
+# Local secrets (SMTP, tokens)
+copy includes\config.local.php.example includes\config.local.php
+
+# Update config.local.php with Gmail app password & other overrides
 ```
 
 ### 3️⃣ **Setup OTP (Optional)**
-
-**WhatsApp OTP:**
-```bash
-# Edit includes/config.php
-WHATSAPP_ENABLED = true
-FONNTE_TOKEN = 'your_fonnte_token'
-```
-
 **Email OTP:**
 ```bash
 # Jalankan setup wizard
@@ -190,7 +187,7 @@ URL: http://localhost/prcf_keuangan_dashboard/
 
 ### Setup Guides
 - [Setup Guide](docs/guides/SETUP_GUIDE.md) - Panduan lengkap instalasi
-- [Email OTP Setup](docs/guides/EMAIL_SETUP_GUIDE.md) - Setup email OTP
+- [Email OTP Setup](docs/guides/EMAIL_SETUP_GUIDE.md) - Setup email OTP (Gmail App Password)
 - [WhatsApp Setup](docs/SETUP_FONNTE.md) - Setup WhatsApp OTP
 - [Ngrok Setup](docs/guides/NGROK_SETUP_GUIDE.md) - Expose local untuk testing
 
@@ -207,13 +204,12 @@ URL: http://localhost/prcf_keuangan_dashboard/
 
 ## 🔧 Troubleshooting
 
-### **OTP Tidak Terkirim?**
+### **OTP Email Tidak Terkirim?**
 ```bash
-# Test WhatsApp OTP
-php tests/test_whatsapp_otp.php
-
 # Test Email OTP
 php tests/test_email.php
+
+# Periksa SMTP log di php_error.log untuk detail
 ```
 
 ### **Error Database Connection?**
@@ -252,8 +248,7 @@ define('MAINTENANCE_MODE', false);
 ## 📦 Dependencies
 
 ### External Services
-- [Fonnte](https://fonnte.com) - WhatsApp API
-- [Brevo](https://brevo.com) - Email SMTP
+- [Gmail SMTP](https://support.google.com/accounts/answer/185833) - Email OTP (App Password)
 - [Ngrok](https://ngrok.com) - Local tunneling (dev only)
 
 ### CDN Resources

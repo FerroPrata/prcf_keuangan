@@ -9,6 +9,8 @@
 # Configuration files (berisi credentials)
 config.php
 maintenance_config.php
+includes/config.local.php
+includes/maintenance_config.local.php
 
 # Environment files
 .env

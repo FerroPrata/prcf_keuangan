@@ -9,14 +9,16 @@ Email OTP sudah **siap berfungsi** dengan Gmail SMTP!
 ## 🎯 Yang Sudah Dikonfigurasi:
 
 ### **1. Gmail SMTP Settings:**
+
 ```
 SMTP Host: smtp.gmail.com
 SMTP Port: 587 (TLS)
-Email: pblprcf@gmail.com
-App Password: vwkx trnf ordu sfuh
+Email: ganti dengan Gmail yang di buat app password
+App Password: ganti dengan App Password 16 digit
 ```
 
 ### **2. Fungsi Email:**
+
 - ✅ `send_otp_email()` - Kirim OTP via Gmail SMTP
 - ✅ `send_notification_email()` - Kirim notifikasi via Gmail SMTP
 - ✅ `smtp_send_email()` - Native PHP SMTP (no library needed)
@@ -28,11 +30,12 @@ App Password: vwkx trnf ordu sfuh
 ### **Smart Fallback System:**
 
 1. **Email Berhasil Terkirim:**
+
    - OTP dikirim ke email user
    - Kotak kuning "DEMO MODE" **TIDAK muncul**
    - User cek email dan input OTP
-
 2. **Email Gagal (localhost/firewall):**
+
    - OTP ditampilkan di halaman (kotak kuning)
    - User bisa langsung copy OTP
    - Tetap bisa login
@@ -105,6 +108,7 @@ Subject: Kode OTP Login - PRCFI Financial
 ### **Problem: Email tidak terkirim**
 
 **Cek 1: App Password benar?**
+
 ```
 App Password: vwkx trnf ordu sfuh
 Email: pblprcf@gmail.com
@@ -115,9 +119,11 @@ Pastikan App Password ini masih aktif di Google Account.
 **Cek 2: Extension OpenSSL aktif?**
 
 Buka `C:\xampp\php\php.ini`, cari:
+
 ```ini
 extension=openssl
 ```
+
 Pastikan TIDAK ada titik koma (;) di depannya.
 
 **Cek 3: Firewall/Antivirus?**
@@ -125,22 +131,27 @@ Pastikan TIDAK ada titik koma (;) di depannya.
 Windows Firewall atau antivirus mungkin block koneksi SMTP.
 
 Temporary disable untuk test:
+
 - Windows Defender Firewall
 - Antivirus third-party
 
 **Cek 4: Port 587 terbuka?**
 
 Test koneksi ke Gmail SMTP:
+
 ```bash
 telnet smtp.gmail.com 587
 ```
 
 Jika tidak bisa connect, coba port 465 (SSL):
 Edit `config.php`:
+
 ```php
 define('SMTP_PORT', 465);
 ```
+
 Dan di fungsi `smtp_send_email()` ganti:
+
 ```php
 $smtp = fsockopen('ssl://' . $smtp_host, $smtp_port, $errno, $errstr, 30);
 ```
@@ -152,12 +163,14 @@ $smtp = fsockopen('ssl://' . $smtp_host, $smtp_port, $errno, $errstr, 30);
 ### **App Password vs Regular Password:**
 
 ✅ **App Password** (yang dipakai):
+
 - Khusus untuk aplikasi
 - Bisa di-revoke kapan saja
 - Lebih aman
 - Google recommended
 
 ❌ **Regular Password** (JANGAN dipakai):
+
 - Kurang aman
 - Bisa akses semua Google services
 - Tidak recommended
@@ -182,14 +195,15 @@ Jika perlu buat App Password baru:
 ### **Untuk Production:**
 
 1. **Ganti Email:**
+
    - Pakai email khusus untuk aplikasi
    - Jangan pakai email pribadi
-
 2. **Monitor Logs:**
+
    - Cek regular log file
    - Setup email notification jika gagal
-
 3. **Rate Limiting:**
+
    - Gmail limit: 500 email/day
    - Cukup untuk aplikasi kecil
    - Upgrade ke Google Workspace jika butuh lebih
@@ -197,13 +211,14 @@ Jika perlu buat App Password baru:
 ### **Untuk Demo:**
 
 1. **Test dengan Email Sendiri:**
+
    ```
    Login dengan user test
    Ganti email di database ke email Anda
    Test login dan cek inbox
    ```
-
 2. **Share ke Teman:**
+
    ```
    Teman login
    Email OTP otomatis terkirim
@@ -214,14 +229,14 @@ Jika perlu buat App Password baru:
 
 ## 📊 Status Saat Ini:
 
-| Fitur | Status | Keterangan |
-|-------|--------|------------|
-| Gmail SMTP Setup | ✅ Ready | Configured dengan native PHP |
-| Send OTP Email | ✅ Working | Kirim OTP saat login |
-| Send Notification Email | ✅ Working | Untuk notifikasi approval dll |
-| Fallback Display | ✅ Working | Tampil di halaman jika email gagal |
-| Error Logging | ✅ Working | Log di Apache error.log |
-| HTML Email Template | ✅ Ready | Professional design |
+| Fitur                   | Status     | Keterangan                         |
+| ----------------------- | ---------- | ---------------------------------- |
+| Gmail SMTP Setup        | ✅ Ready   | Configured dengan native PHP       |
+| Send OTP Email          | ✅ Working | Kirim OTP saat login               |
+| Send Notification Email | ✅ Working | Untuk notifikasi approval dll      |
+| Fallback Display        | ✅ Working | Tampil di halaman jika email gagal |
+| Error Logging           | ✅ Working | Log di Apache error.log            |
+| HTML Email Template     | ✅ Ready   | Professional design                |
 
 ---
 
@@ -239,6 +254,5 @@ Jika perlu buat App Password baru:
 
 ---
 
-**Updated:** 15 Oktober 2025  
+**Updated:** 15 Oktober 2025
 **Version:** 1.0 - Gmail SMTP Native
-
