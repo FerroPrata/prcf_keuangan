@@ -1,0 +1,106 @@
+================================================================================
+🔧 DEVELOPER MODE - OTP BYPASS (Quick Guide)
+================================================================================
+
+✅ STATUS: AKTIF & SIAP DIGUNAKAN!
+
+================================================================================
+🚀 CARA PAKAI (Super Simple):
+================================================================================
+
+1. Login dengan email yang terdaftar:
+   - 12345c4n12345@gmail.com (Chandra - FM)
+   - ferrosipratamaq@gmail.com (Ferrosi - Direktur)
+   - hasukeyous@gmail.com (Yoga - PM)
+
+2. Input password seperti biasa
+
+3. 🎉 LANGSUNG MASUK DASHBOARD! (skip OTP)
+
+================================================================================
+➕ CARA TAMBAH DEVELOPER BARU:
+================================================================================
+
+1. Buka file: config.php
+2. Cari section: DEVELOPER MODE
+3. Tambahkan email di array:
+
+   $DEVELOPER_EMAILS = [
+       '12345c4n12345@gmail.com',
+       'ferrosipratamaq@gmail.com',
+       'hasukeyous@gmail.com',
+       'email-baru@example.com',  ← Tambah di sini
+   ];
+
+4. Save & refresh browser
+
+================================================================================
+⚙️ OPSI KONFIGURASI:
+================================================================================
+
+OPTION 1 - Developer Whitelist (RECOMMENDED ✅):
+   define('DEVELOPER_MODE', true);
+   → Hanya email terdaftar yang bypass OTP
+
+OPTION 2 - Disable OTP untuk SEMUA (NOT RECOMMENDED ⚠️):
+   define('SKIP_OTP_FOR_ALL', true);
+   → SEMUA user skip OTP (dangerous!)
+
+================================================================================
+🔒 UNTUK PRODUCTION:
+================================================================================
+
+WAJIB DISABLE sebelum deploy!
+
+Set di config.php:
+   define('DEVELOPER_MODE', false);  ← DISABLE!
+   define('SKIP_OTP_FOR_ALL', false);
+
+Restart Apache:
+   net stop Apache2.4 && net start Apache2.4
+
+================================================================================
+✅ KEUNTUNGAN DEVELOPER MODE:
+================================================================================
+
+✅ Tidak perlu tunggu OTP WhatsApp (save time!)
+✅ Tidak perlu HP untuk testing (convenient!)
+✅ Cepat login-logout untuk testing multiple roles
+✅ Tidak menghabiskan quota Fonnte API
+✅ Perfect untuk rapid development
+
+================================================================================
+⚠️ WARNING:
+================================================================================
+
+❌ JANGAN aktifkan SKIP_OTP_FOR_ALL di production
+❌ JANGAN tambahkan email client/user biasa ke developer list
+❌ JANGAN lupa disable saat deploy
+❌ JANGAN commit config.php dengan DEVELOPER_MODE=true ke GitHub
+
+================================================================================
+🧪 TEST SEKARANG:
+================================================================================
+
+1. Logout jika sedang login
+2. Login dengan: 12345c4n12345@gmail.com
+3. Input password
+4. Jika langsung masuk dashboard → ✅ BERHASIL!
+5. Jika masih diminta OTP → ❌ Check config.php
+
+================================================================================
+📄 DOKUMENTASI LENGKAP:
+================================================================================
+
+Baca file: DEVELOPER_MODE_GUIDE.md
+
+================================================================================
+✅ READY TO USE!
+================================================================================
+
+Developer mode sudah aktif! Silakan test login dengan email yang terdaftar.
+
+Happy coding! 🚀
+
+================================================================================
+
