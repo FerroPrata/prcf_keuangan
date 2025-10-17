@@ -15,14 +15,14 @@ $error = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['verify_otp'])) {
-        $entered_otp = $_POST['otp'];
+    if (!empty($_POST['verify_otp'])) {
+        $entered_otp = preg_replace('/\D/', '', $_POST['otp'] ?? '');
         $current_time = time();
         
         // Check if OTP expired (60 seconds)
-        if ($current_time - $_SESSION['otp_time'] > 60) {
+        if ($current_time - ($_SESSION['otp_time'] ?? 0) > 60) {
             $error = 'Kode OTP telah kadaluarsa';
-        } elseif ($entered_otp == $_SESSION['otp']) {
+        } elseif ($entered_otp === (string)($_SESSION['otp'] ?? '')) {
             // OTP correct
             $user_id = $_SESSION['user_id'];
             
@@ -33,47 +33,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = $stmt->get_result();
             $user = $result->fetch_assoc();
             
-            unset($_SESSION['otp']);
-            unset($_SESSION['otp_time']);
-            unset($_SESSION['pending_login']);
-            unset($_SESSION['otp_attempts']);
-            unset($_SESSION['demo_otp_display']);
+            unset($_SESSION['otp'], $_SESSION['otp_time'], $_SESSION['pending_login'], $_SESSION['otp_attempts']);
             
             // Redirect based on role
+            $redirect = '../pages/dashboards/';
             switch ($user['role']) {
-                case 'Project Manager':
-                    header('Location: ../pages/dashboards/dashboard_pm.php');
-                    break;
-                case 'Staff Accountant':
-                    header('Location: ../pages/dashboards/dashboard_sa.php');
-                    break;
-                case 'Finance Manager':
-                    header('Location: ../pages/dashboards/dashboard_fm.php');
-                    break;
-                case 'Direktur':
-                    header('Location: ../pages/dashboards/dashboard_dir.php');
-                    break;
-                default:
-                    header('Location: ../pages/dashboards/dashboard_pm.php');
+                case 'Project Manager':  $redirect .= 'dashboard_pm.php'; break;
+                case 'Staff Accountant': $redirect .= 'dashboard_sa.php'; break;
+                case 'Finance Manager':  $redirect .= 'dashboard_fm.php'; break;
+                case 'Direktur':         $redirect .= 'dashboard_dir.php'; break;
+                default:                 $redirect .= 'dashboard_pm.php'; break;
             }
+            header("Location: $redirect");
             exit();
         } else {
             $_SESSION['otp_attempts'] = ($_SESSION['otp_attempts'] ?? 0) + 1;
             $error = 'Kode OTP salah, ulangi lagi';
         }
-    } elseif (isset($_POST['resend_otp'])) {
+    } elseif (!empty($_POST['resend_otp'])) {
         $current_time = time();
-        if ($current_time - $_SESSION['otp_time'] < 15) {
+        if ($current_time - ($_SESSION['otp_time'] ?? 0) < 15) {
             $error = 'Tunggu sebentar sebelum meminta OTP baru';
         } else {
-            $otp = rand(100000, 999999);
-            $_SESSION['otp'] = $otp;
+            $_SESSION['otp'] = rand(100000, 999999);
             $_SESSION['otp_time'] = $current_time;
             $_SESSION['otp_attempts'] = 0;
 
-            if (defined('EMAIL_OTP_ENABLED') && EMAIL_OTP_ENABLED === true) {
-                $email_sent = send_otp_email($_SESSION['user_email'], $otp);
-                if ($email_sent) {
+            if (!empty($_SESSION['user_email']) && EMAIL_OTP_ENABLED) {
+                if (send_otp_email($_SESSION['user_email'], $_SESSION['otp'])) {
                     $success = 'Kode OTP baru telah dikirim ke email Anda.';
                 } else {
                     $error = 'Gagal mengirim OTP email. Silakan coba lagi.';
