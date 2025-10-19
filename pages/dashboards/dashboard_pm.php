@@ -76,7 +76,7 @@ while ($row = $approved_proposals->fetch_assoc()) {
         'type' => 'success',
         'id' => $row['id_proposal'],
         'title' => 'Proposal disetujui: ' . $row['judul_proposal'],
-        'link' => '../proposals/review_proposal.php?id=' . $row['id_proposal'],
+        'link' => '../proposals/view_proposal.php?id=' . $row['id_proposal'],
         'time' => time_elapsed_string($row['updated_at']),
         'is_unread' => $is_unread
     ];
@@ -93,7 +93,7 @@ while ($row = $rejected_proposals->fetch_assoc()) {
         'type' => 'rejected',
         'id' => $row['id_proposal'],
         'title' => 'Proposal ditolak: ' . $row['judul_proposal'],
-        'link' => '../proposals/review_proposal.php?id=' . $row['id_proposal'],
+        'link' => '../proposals/view_proposal.php?id=' . $row['id_proposal'],
         'time' => time_elapsed_string($row['updated_at']),
         'is_unread' => $is_unread
     ];
@@ -351,7 +351,7 @@ session_write_close();
                                 'approved' => 'Disetujui (Final)',
                                 'rejected' => 'Ditolak'
                             ];
-                            $link = '../proposals/review_proposal.php?id=' . $activity['id']; // READ-ONLY for PM
+                            $link = '../proposals/view_proposal.php?id=' . $activity['id']; // READ-ONLY for PM
                         } else {
                             $icon = 'fa-chart-line';
                             $color = 'green';
