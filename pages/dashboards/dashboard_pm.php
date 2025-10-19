@@ -12,12 +12,22 @@ require_once '../../includes/maintenance_config.php';
 // Check maintenance mode (admin with whitelisted IP can bypass)
 check_maintenance();
 
+// Debug: Log session state on dashboard access
+error_log("🔍 dashboard_pm.php - Session check: " . json_encode([
+    'logged_in' => $_SESSION['logged_in'] ?? false,
+    'user_id' => $_SESSION['user_id'] ?? null,
+    'user_role' => $_SESSION['user_role'] ?? null,
+    'session_id' => session_id()
+]));
+
 if (!isset($_SESSION['logged_in'])) {
+    error_log("⚠️ dashboard_pm.php - Not logged in, redirecting to login.php");
     header('Location: ../../auth/login.php');
     exit();
 }
 
 if ($_SESSION['user_role'] !== 'Project Manager') {
+    error_log("⚠️ dashboard_pm.php - Wrong role: " . ($_SESSION['user_role'] ?? 'none'));
     header('Location: ../../auth/unauthorized.php');
     exit();
 }
