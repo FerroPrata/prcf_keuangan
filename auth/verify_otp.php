@@ -34,6 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user = $result->fetch_assoc();
             
             unset($_SESSION['otp'], $_SESSION['otp_time'], $_SESSION['pending_login'], $_SESSION['otp_attempts']);
+            $_SESSION['user_id'] = $user['id_user'];
+            $_SESSION['user_name'] = $user['nama'];
+            $_SESSION['user_role'] = $user['role'];
+            $_SESSION['user_email'] = $user['email'];
+            $_SESSION['logged_in'] = true;
             
             // Redirect based on role
             $redirect = '../pages/dashboards/';
