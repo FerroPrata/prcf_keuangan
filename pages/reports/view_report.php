@@ -23,11 +23,11 @@ $report_id = $_GET['id'] ?? 0;
 
 // Determine return dashboard
 $return_dashboard = match($user_role) {
-    'Project Manager' => 'dashboard_pm.php',
-    'Finance Manager' => 'dashboard_fm.php',
-    'Staff Accountant' => 'dashboard_sa.php',
-    'Direktur' => 'dashboard_dir.php',
-    default => 'index.php'
+    'Project Manager' => '../dashboards/dashboard_pm.php',
+    'Finance Manager' => '../dashboards/dashboard_fm.php',
+    'Staff Accountant' => '../dashboards/dashboard_sa.php',
+    'Direktur' => '../dashboards/dashboard_dir.php',
+    default => '../dashboards/dashboard_pm.php'
 };
 
 // Get report header
@@ -45,10 +45,15 @@ if (!$report) {
 }
 
 // Get report details
-$details_stmt = $conn->prepare("SELECT * FROM laporan_keuangan_detail WHERE id_laporan_keu = ? ORDER BY id_detail ASC");
-$details_stmt->bind_param("i", $report_id);
-$details_stmt->execute();
-$details = $details_stmt->get_result();
+$details_stmt = $conn->prepare("SELECT * FROM laporan_keuangan_detail WHERE id_laporan_keu = ? ORDER BY id_detail_keu ASC");
+if ($details_stmt) {
+    $details_stmt->bind_param("i", $report_id);
+    $details_stmt->execute();
+    $details = $details_stmt->get_result();
+} else {
+    // Fallback to avoid fatal errors on bind_param if prepare fails
+    $details = $conn->query("SELECT * FROM laporan_keuangan_detail WHERE id_laporan_keu = " . (int)$report_id . " ORDER BY id_detail_keu ASC");
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -160,6 +165,7 @@ $details = $details_stmt->get_result();
                                 <th class="border border-gray-200 px-3 py-2 text-right text-xs font-medium text-gray-700">Actual</th>
                                 <th class="border border-gray-200 px-3 py-2 text-right text-xs font-medium text-gray-700">Balance</th>
                                 <th class="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-700">Explanation</th>
+                                <th class="border border-gray-200 px-3 py-2 text-center text-xs font-medium text-gray-700">Nota</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -190,6 +196,22 @@ $details = $details_stmt->get_result();
                                     <?php echo number_format($detail['balance'], 2); ?>
                                 </td>
                                 <td class="border border-gray-200 px-3 py-2 text-sm"><?php echo htmlspecialchars($detail['explanation']); ?></td>
+                                <td class="border border-gray-200 px-3 py-2 text-center text-sm">
+                                    <?php if (!empty($detail['file_nota'])): ?>
+                                        <?php $isImage = preg_match('/\.(jpg|jpeg|png|gif|bmp|webp|tif|tiff)$/i', $detail['file_nota']); ?>
+                                        <?php if ($isImage): ?>
+                                            <a href="<?php echo htmlspecialchars($detail['file_nota']); ?>" target="_blank" class="inline-flex items-center px-3 py-1 bg-blue-500 text-white rounded-full text-xs hover:bg-blue-600">
+                                                <i class="fas fa-image mr-1"></i> Preview
+                                            </a>
+                                        <?php else: ?>
+                                            <a href="<?php echo htmlspecialchars($detail['file_nota']); ?>" target="_blank" class="inline-flex items-center px-3 py-1 bg-blue-500 text-white rounded-full text-xs hover:bg-blue-600">
+                                                <i class="fas fa-file-pdf mr-1"></i> Unduh
+                                            </a>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <span class="text-xs text-gray-400">-</span>
+                                    <?php endif; ?>
+                                </td>
                             </tr>
                             <?php endwhile; ?>
                         </tbody>
@@ -219,4 +241,3 @@ $details = $details_stmt->get_result();
     </main>
 </body>
 </html>
-

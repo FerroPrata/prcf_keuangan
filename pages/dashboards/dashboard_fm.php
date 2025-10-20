@@ -26,8 +26,11 @@ $user_name = $_SESSION['user_name'];
 $user_id = $_SESSION['user_id'];
 
 // Get user's last notification check time (with error handling if column doesn't exist yet)
-$last_check_query = $conn->query("SELECT last_notification_check FROM user WHERE id_user = {$user_id}");
-if ($last_check_query) {
+// Check if last_notification_check column exists first to avoid error
+$check_notif_column = $conn->query("SHOW COLUMNS FROM user LIKE 'last_notification_check'");
+if ($check_notif_column && $check_notif_column->num_rows > 0) {
+    // Column exists, get the value
+    $last_check_query = $conn->query("SELECT last_notification_check FROM user WHERE id_user = {$user_id}");
     $last_check_data = $last_check_query->fetch_assoc();
     $last_notification_check = $last_check_data['last_notification_check'] ?? '1970-01-01 00:00:00';
     
@@ -251,8 +254,8 @@ session_write_close();
                         <i class="fas fa-university text-white text-2xl"></i>
                     </div>
                 </div>
-                <a href="../../public/under_construction.php?feature=Buku Bank" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200 font-medium">
-                    Kelola
+                <a href="../books/buku_bank.php" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200 font-medium">
+                    <i class="fas fa-arrow-right mr-2"></i>Kelola
                 </a>
             </div>
 
@@ -266,8 +269,8 @@ session_write_close();
                         <i class="fas fa-file-invoice-dollar text-white text-2xl"></i>
                     </div>
                 </div>
-                <a href="../../public/under_construction.php?feature=Buku Piutang" class="inline-block bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition duration-200 font-medium">
-                    Kelola
+                <a href="../books/buku_piutang.php" class="inline-block bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition duration-200 font-medium">
+                    <i class="fas fa-arrow-right mr-2"></i>Kelola
                 </a>
             </div>
 
